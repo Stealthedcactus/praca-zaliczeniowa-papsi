@@ -1,13 +1,11 @@
-FROM python:3.11
-
+FROM python:3.11-slim-bullseye
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app/
+WORKDIR /app
 
-COPY ./app /app
+COPY requirements.txt requirements.txt
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-CMD["python", "./app/main.py"]

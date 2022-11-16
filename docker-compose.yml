@@ -1,35 +1,37 @@
 version: "3"
 services:
-  db:
-    image: postgres:15 # https://hub.docker.com/_/postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - app-db-data:/var/lib/postgresql/data/pgdata
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-
-      - POSTGRES_DB=app
-      
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
-
-  app: 
+  app:
     build:
       dockerfile: Dockerfile
-    depends_on: 
-      - db
-    ports: 
+      # depends_on:
+      # - db
+    ports:
       - "8001:8001"
     volumes:
-    - ./app:/app
+      - ./app:/app
+    command:
+      python main.py
+#      tail -f /dev/null
+
+#  db:
+#    image: postgres:15 # https://hub.docker.com/_/postgres
+#    restart: always
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - app-db-data:/var/lib/postgresql/data/pgdata
+#    environment:
+#      - PGDATA=/var/lib/postgresql/data/pgdata
+#
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=password
+#      - POSTGRES_DB=app
+#
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - "8080:8080"
 
 volumes:
   app-db-data:
