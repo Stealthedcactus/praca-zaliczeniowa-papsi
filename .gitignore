@@ -1,0 +1,4 @@
+build_model
+.idea
+__pycache__
+app/tested_images

@@ -11,6 +11,7 @@ services:
       - ./app:/app
     command:
       python main.py
+    
 #      tail -f /dev/null
 
 #  db:
@@ -32,6 +33,6 @@ services:
 #    restart: always
 #    ports:
 #      - "8080:8080"
-
-volumes:
-  app-db-data:
+#
+#volumes:
+#  app-db-data:

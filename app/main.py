@@ -18,7 +18,8 @@ cnn_model: CNNModel
 @api_router.on_event("startup")
 def init_cnn_model():
     global cnn_model
-    cnn_model = CNNModel(filepath="ml_models/dogvscat.h5")
+    cnn_model = CNNModel(filepath="ml_models/dogvscat.h5",
+                         test_image_path="test.jpg")
 
 
 @api_router.get("/")
@@ -31,9 +32,10 @@ def root(request: Request):
 def create_upload_file(file: UploadFile):
     start = timeit.default_timer()
 
-    with open(f"{file.filename}", 'wb') as buffer:
+    with open(f"tested_images/{file.filename}", 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
-    res = cnn_model.predict_image(image_path=file.filename)
+    res = cnn_model.predict_image(image_path=f"tested_images/{file.filename}")
+    res = round(float(res), 5)
 
     stop = timeit.default_timer()
     print('Time: ', stop - start)
@@ -46,4 +48,4 @@ app.include_router(api_router)
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="localhost", port=8001, log_level="debug", reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, log_level="debug", reload=True)
