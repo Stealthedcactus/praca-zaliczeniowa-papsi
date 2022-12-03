@@ -1,28 +1,44 @@
+import shutil
+import timeit
 from fastapi import FastAPI, APIRouter
 from fastapi import Request
+from fastapi import UploadFile
 from fastapi.templating import Jinja2Templates
 
-from model_functions import load_model, model_predict
-from schemas import Predict, PredictResponse
+from model_functions import CNNModel
 
 app = FastAPI(title="Title")
 api_router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
+cnn_model: CNNModel
+
+
+@api_router.on_event("startup")
+def init_cnn_model():
+    global cnn_model
+    cnn_model = CNNModel(filepath="ml_models/dogvscat.h5")
+
 
 @api_router.get("/")
 def root(request: Request):
     ...
-    return templates.TemplateResponse("index.html", {"request": request})
+    return {"message": "/"}
 
 
-@api_router.post("/predict", response_model=PredictResponse)
-def predict(*, prediction_in: Predict):
-    model = load_model(model_choice=prediction_in.model_choice)
-    model_prediction = model_predict(string_=prediction_in.user_input, model=model)
+@api_router.post("/uploadfile/")
+def create_upload_file(file: UploadFile):
+    start = timeit.default_timer()
 
-    return PredictResponse(response=model_prediction)
+    with open(f"{file.filename}", 'wb') as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    res = cnn_model.predict_image(image_path=file.filename)
+
+    stop = timeit.default_timer()
+    print('Time: ', stop - start)
+    return {"filename": file.filename,
+            "result": res}
 
 
 app.include_router(api_router)
