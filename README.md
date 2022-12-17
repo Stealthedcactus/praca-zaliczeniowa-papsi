@@ -1,2 +1,2 @@
-Opis
+docker-compose up --build
 
