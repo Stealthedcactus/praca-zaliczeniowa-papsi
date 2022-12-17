@@ -7,6 +7,7 @@ class CNNModel:
 
     def __init__(self, filepath: str, test_image_path: str):
         self.model = load_model(filepath=filepath)
+        # For test
         self.predict_image(image_path=test_image_path)
 
     def __prepare_image__(self, filename: str):
@@ -21,3 +22,11 @@ class CNNModel:
         img = self.__prepare_image__(filename=image_path)
         result = self.model.predict(img)
         return result[0]
+
+
+def result_translate(result):
+    result = float(result)
+    if result < 0.5:
+        return f"Cat - {(1 - result) * 100}%"
+    else:
+        return f"Dog - {result * 100}%"

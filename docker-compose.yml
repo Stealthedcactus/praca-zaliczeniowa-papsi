@@ -7,11 +7,12 @@ services:
       # - db
     ports:
       - "8001:8001"
-    volumes:
-      - ./app:/app
+#    volumes:
+#      - app-volume:/app
     command:
       python main.py
-
+volumes:
+  app-volume:
 #      tail -f /dev/null
 
 #  db:
@@ -34,5 +35,3 @@ services:
 #    ports:
 #      - "8080:8080"
 #
-#volumes:
-#  app-db-data:

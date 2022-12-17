@@ -1,1 +1,111 @@
-<p>Hi!</p>
+<html lang="en">
+
+<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+<script type="text/javascript">
+
+    function previewFile() {
+        const preview = document.querySelector('img');
+        var file = document.getElementById('fileInput').files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", function () {
+            preview.src = reader.result; // show image in <img> tag
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function preview() {
+        IMAGE.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    function uploadFile(file) {
+        var file = document.getElementById('fileInput').files[0];
+        // alert("test");
+        if (file) {
+            var formData = new FormData();
+            formData.append('file', file);
+            fetch('/upload2', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // document.getElementById("serverMsg").innerHTML = data.message;
+                    document.getElementById("result").innerHTML = data.result;
+                    document.getElementById("time_stamp").innerHTML = data.time_stamp;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    }
+</script>
+
+<body class="font-mono from-red-100 via-red-300 to-blue-500 bg-gradient-to-br ">
+<!-- Container -->
+<div class="container mx-auto ">
+    <div class="flex justify-center  my-24 ">
+        <!-- Row -->
+        <div class="w-full xl:w-3/4 lg:w-11/12 sm:w-11/12 flex">
+
+            <!-- Col -->
+            <div class="flex-none sm:w-1/2 relative w-full h-auto hidden sm:block  bg-cover">
+                <img id="IMAGE" src="data:image/jpeg;base64,{{ example_file }}" alt=""
+                     class="absolute inset-0 w-full h-full object-cover rounded-l-xl"
+                     loading="lazy"/>
+
+            </div>
+            <!-- Col -->
+            <div class="flex-none sm:w-1/2 p-5 rounded-lg lg:rounded-l-none bg-white">
+                <div class="px-8 mb-4 text-center">
+                    <h3 class="pt-4 mb-2 text-2xl">Is it a dog, or a cat?</h3>
+                    <p class="mb-4 text-sm text-gray-700">
+                        Upload photo and we'll send you our prediction!
+                    </p>
+                </div>
+
+                <form class="px-8 pt-6 pb-8 mb-4 bg-white rounded">
+                    <!--Upload file-->
+                    <div class="mb-4">
+                        <label class="block mb-2 text-sm font-bold text-gray-700">
+                            File
+                        </label>
+                        <input
+                                class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                id="fileInput"
+                                type="file"
+                                onchange="preview()"
+                                placeholder="..."/>
+                    </div>
+                    <!--Predict button-->
+                    <div class="mb-6 text-center">
+                        <button
+                                class="w-full px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700 focus:outline-none focus:shadow-outline"
+                                type="button"
+                                onclick="uploadFile()">
+                            Predict
+                        </button>
+                    </div>
+
+                    <!--Show result and timestamp-->
+                    <hr class="mb-6 border-t"/>
+                    <div class="text-center">
+                        <p class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
+                           id="result">
+                            ...
+                        </p>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
+                           id="time_stamp">
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
